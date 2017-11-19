@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Core.Entities;
-using Persistance;
 
 namespace StockMVC.Controllers
 {
@@ -51,7 +47,7 @@ namespace StockMVC.Controllers
         public IActionResult Create()
         {
             ViewData["ProductId"] = new SelectList(_productsRepository.Get(), "Id", "Name", null);
-            return View();
+            return View(new Stock());
         }
 
         // POST: Stocks/Create
@@ -59,7 +55,7 @@ namespace StockMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,ProductId,Quantity,Price,IsCredit")] Stock stock)
+        public IActionResult Create([Bind("Id,ProductId,Quantity,Price,IsCredit,OperationTime")] Stock stock)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +88,7 @@ namespace StockMVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,ProductId,Quantity,Price,IsCredit")] Stock stock)
+        public IActionResult Edit(Guid id, [Bind("Id,ProductId,Quantity,Price,IsCredit,OperationTime")] Stock stock)
         {
             if (id != stock.Id)
             {

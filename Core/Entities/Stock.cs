@@ -5,7 +5,14 @@ namespace Core.Entities
 {
     public class Stock
     {
+        public Stock()
+        {
+            OperationTime = DateTime.Now;  
+        }
+
         public Guid Id { get; set; }
+
+        public DateTime OperationTime { get; set; }
 
         public Guid ProductId { get; set; }
 
