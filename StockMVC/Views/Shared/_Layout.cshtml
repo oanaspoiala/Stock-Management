@@ -39,6 +39,14 @@
             </div>
         </div>
     </nav>
+
+@if(!string.IsNullOrEmpty(ViewData["ErrorMessage"]?.ToString()))
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
     <div class="container body-content">
         @RenderBody()
         <hr />

@@ -140,6 +140,11 @@ namespace StockMVC.Controllers
                 return NotFound();
             }
 
+            if (Math.Abs(_stocksRepository.GetProductQtty(id.Value)) > double.Epsilon)
+            {
+                return RedirectToAction(nameof(Details), new {id = id});
+            }
+
             return View(product);
         }
 
@@ -148,6 +153,10 @@ namespace StockMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            if (Math.Abs(_stocksRepository.GetProductQtty(id)) > double.Epsilon)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             _productsRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
