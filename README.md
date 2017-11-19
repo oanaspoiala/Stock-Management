@@ -1,6 +1,7 @@
 # Stock-Management
-.net Core 2.0.0 application for management of stocks
-MVC
-Onion arhitecture
-Entity Framework
-Dependency Injection
+<ul>
+  <li>MVC</li>
+  <li>Onion arhitecture</li>
+  <li>Entity Framework</li>
+  <li>Dependency Injection</li>
+</ul>
