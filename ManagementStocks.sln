@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Buisness", "Buisness", "{35
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{4E37ED17-C6F9-4A0E-9057-AE60B9F2F38A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{12C39604-08C2-43A1-A665-E6527088D96A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagementStocks.Core", "Core\ManagementStocks.Core.csproj", "{12C39604-08C2-43A1-A665-E6527088D96A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistance", "Persistance\Persistance.csproj", "{BD80EB14-36EE-4E13-85F0-045DA49EFF0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistance", "Persistance\Persistance.csproj", "{BD80EB14-36EE-4E13-85F0-045DA49EFF0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{7D3627EA-1228-4A8E-9748-D2900A7AE735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagementStocks.Repository", "Repository\ManagementStocks.Repository.csproj", "{7D3627EA-1228-4A8E-9748-D2900A7AE735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMVC", "StockMVC\StockMVC.csproj", "{99F243A1-16C2-4EF4-9437-45724A1D2117}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagementStocks.MVC", "StockMVC\ManagementStocks.MVC.csproj", "{99F243A1-16C2-4EF4-9437-45724A1D2117}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

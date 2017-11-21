@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Core;
 using Core.Entities;
+using ManagementStocks.Core.Interfaces;
 using Persistance;
 
-namespace Repository
+namespace ManagementStocks.Repository
 {
     public class ProductsRepository : IProductsRepository
     {

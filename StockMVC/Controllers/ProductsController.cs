@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Core;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Core.Entities;
-using Persistance;
-using StockMVC.Models;
+using ManagementStocks.Core.Interfaces;
+using ManagementStocks.MVC.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace StockMVC.Controllers
+namespace ManagementStocks.MVC.Controllers
 {
     public class ProductsController : Controller
     {
@@ -24,8 +20,12 @@ namespace StockMVC.Controllers
         }
 
         // GET: Products
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string searchString, int? page, int? pageSize)
         {
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "name_desc" ? "name" : "name_desc";
+            ViewData["QttySortParm"] = sortOrder == "qtty" ? "qtty_desc" : "qtty";
+            ViewData["CurrentFilter"] = searchString;
+
             var products = _productsRepository.Get()
                 .Select(x => new ProductViewModel
                 {
@@ -34,6 +34,28 @@ namespace StockMVC.Controllers
                     Description = x.Description,
                     Qtty = _stocksRepository.GetProductQtty(x.Id)
                 }).ToList();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(s => s.Name.ToUpper().Contains(searchString.ToUpper())
+                                               || s.Description.ToUpper().Contains(searchString.ToUpper())).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    products = products.OrderByDescending(s => s.Name).ToList();
+                    break;
+                case "qtty":
+                    products = products.OrderBy(s => s.Qtty).ToList();
+                    break;
+                case "qtty_desc":
+                    products = products.OrderByDescending(s => s.Qtty).ToList();
+                    break;
+                default:
+                    products = products.OrderBy(s => s.Name).ToList();
+                    break;
+            }
             return View(products);
         }
 
@@ -142,7 +164,7 @@ namespace StockMVC.Controllers
 
             if (Math.Abs(_stocksRepository.GetProductQtty(id.Value)) > double.Epsilon)
             {
-                return RedirectToAction(nameof(Details), new {id = id});
+                return RedirectToAction(nameof(Details), new {id});
             }
 
             return View(product);

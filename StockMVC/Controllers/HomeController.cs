@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using ManagementStocks.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
-using StockMVC.Models;
 
-namespace StockMVC.Controllers
+namespace ManagementStocks.MVC.Controllers
 {
     public class HomeController : Controller
     {

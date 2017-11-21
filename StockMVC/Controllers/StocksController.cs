@@ -1,11 +1,11 @@
 ﻿using System;
-using Core;
+using Core.Entities;
+using ManagementStocks.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Core.Entities;
 
-namespace StockMVC.Controllers
+namespace ManagementStocks.MVC.Controllers
 {
     public class StocksController : Controller
     {

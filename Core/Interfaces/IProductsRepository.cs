@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Core.Entities;
 
-namespace Core
+namespace ManagementStocks.Core.Interfaces
 {
     public interface IProductsRepository
     {

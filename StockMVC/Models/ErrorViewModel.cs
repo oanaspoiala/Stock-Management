@@ -1,6 +1,4 @@
-using System;
-
-namespace StockMVC.Models
+namespace ManagementStocks.MVC.Models
 {
     public class ErrorViewModel
     {
