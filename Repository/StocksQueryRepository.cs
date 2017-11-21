@@ -5,6 +5,7 @@ using Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistance;
+using StockManagement.Utils.QueryUtils;
 
 namespace ManagementStocks.Repository
 {
@@ -20,6 +21,11 @@ namespace ManagementStocks.Repository
         public IReadOnlyList<Stock> Get()
         {
             return _databaseContext.Stocks.Include(x => x.Product).ToList();
+        }
+
+        public IReadOnlyList<Stock> Get(QueryParameters queryParameters)
+        {
+            throw new NotImplementedException();
         }
 
         public Stock Get(Guid id)

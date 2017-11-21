@@ -5,6 +5,7 @@ using ManagementStocks.Core.Interfaces;
 using ManagementStocks.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StockManagement.Utils.QueryUtils;
 
 namespace ManagementStocks.MVC.Controllers
 {
@@ -31,7 +32,45 @@ namespace ManagementStocks.MVC.Controllers
             ViewData["QttySortParm"] = sortOrder == "qtty" ? "qtty_desc" : "qtty";
             ViewData["CurrentFilter"] = searchString;
 
-            var products = _productsQueryRepository.Get()
+            var queryParameters = new QueryParameters
+            {
+                PageNumber = page ?? 1,
+                PageSize = pageSize ?? 10
+            };
+            var sortItem = new QuerySortItem();
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    sortItem.FieldName = "Name";
+                    sortItem.Descending = true;
+                    break;
+                case "qtty":
+                    sortItem.FieldName = "Qtty";
+                    sortItem.Descending = false;
+                    break;
+                case "qtty_desc":
+                    sortItem.FieldName = "Qtty";
+                    sortItem.Descending = true;
+                    break;
+                default:
+                    sortItem.FieldName = "Name";
+                    sortItem.Descending = false;
+                    break;
+            }
+            queryParameters.SortItems.Add(sortItem);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                queryParameters.Filters.Add(new QueryFilterItem
+                {
+                    FieldName = "Name",
+                    FilterValue = searchString,
+                    FilterOperator = "LIKE",
+                    ParameterName = "Name"
+                });
+            }
+
+            var products = _productsQueryRepository.Get(queryParameters)
                 .Select(x => new ProductViewModel
                 {
                     Id = x.Id,
@@ -40,27 +79,6 @@ namespace ManagementStocks.MVC.Controllers
                     Qtty = _stocksQueryRepository.GetProductQtty(x.Id)
                 }).ToList();
 
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                products = products.Where(s => s.Name.ToUpper().Contains(searchString.ToUpper())
-                                               || s.Description.ToUpper().Contains(searchString.ToUpper())).ToList();
-            }
-
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    products = products.OrderByDescending(s => s.Name).ToList();
-                    break;
-                case "qtty":
-                    products = products.OrderBy(s => s.Qtty).ToList();
-                    break;
-                case "qtty_desc":
-                    products = products.OrderByDescending(s => s.Qtty).ToList();
-                    break;
-                default:
-                    products = products.OrderBy(s => s.Name).ToList();
-                    break;
-            }
             return View(products);
         }
 
