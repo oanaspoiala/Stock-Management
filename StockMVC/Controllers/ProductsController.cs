@@ -10,13 +10,18 @@ namespace ManagementStocks.MVC.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly IProductsRepository _productsRepository;
-        private readonly IStocksRepository _stocksRepository;
+        private readonly ICommandRepository<Product> _productsCommandRepository;
+        private readonly IQueryRepository<Product> _productsQueryRepository;
+        private readonly IStocksQueryRepository _stocksQueryRepository;
 
-        public ProductsController(IProductsRepository productsRepository, IStocksRepository stocksRepository)
+        public ProductsController(
+            ICommandRepository<Product> productsCommandRepository,
+            IQueryRepository<Product> productsQueryRepository,
+            IStocksQueryRepository stocksQueryRepository)
         {
-            _productsRepository = productsRepository;
-            _stocksRepository = stocksRepository;
+            _productsCommandRepository = productsCommandRepository;
+            _productsQueryRepository = productsQueryRepository;
+            _stocksQueryRepository = stocksQueryRepository;
         }
 
         // GET: Products
@@ -26,13 +31,13 @@ namespace ManagementStocks.MVC.Controllers
             ViewData["QttySortParm"] = sortOrder == "qtty" ? "qtty_desc" : "qtty";
             ViewData["CurrentFilter"] = searchString;
 
-            var products = _productsRepository.Get()
+            var products = _productsQueryRepository.Get()
                 .Select(x => new ProductViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    Qtty = _stocksRepository.GetProductQtty(x.Id)
+                    Qtty = _stocksQueryRepository.GetProductQtty(x.Id)
                 }).ToList();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -67,7 +72,7 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var product = _productsRepository.Get(id.Value);
+            var product = _productsQueryRepository.Get(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -90,10 +95,11 @@ namespace ManagementStocks.MVC.Controllers
         public IActionResult Create([Bind("Id,Name,Description")] Product product)
         {
             if (ModelState.IsValid)
-            { product.Id = Guid.NewGuid();
-                _productsRepository.Create(product);
+            {
+                product.Id = Guid.NewGuid();
+                _productsCommandRepository.Create(product);
                 return RedirectToAction(nameof(Index));
-               
+
             }
             return View(product);
         }
@@ -106,7 +112,7 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var product = _productsRepository.Get(id.Value);
+            var product = _productsQueryRepository.Get(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -130,11 +136,11 @@ namespace ManagementStocks.MVC.Controllers
             {
                 try
                 {
-                    _productsRepository.Update(product);
+                    _productsCommandRepository.Update(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (_productsRepository.Get(product.Id) == null)
+                    if (_productsQueryRepository.Get(product.Id) == null)
                     {
                         return NotFound();
                     }
@@ -156,15 +162,15 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var product = _productsRepository.Get(id.Value);
+            var product = _productsQueryRepository.Get(id.Value);
             if (product == null)
             {
                 return NotFound();
             }
 
-            if (Math.Abs(_stocksRepository.GetProductQtty(id.Value)) > double.Epsilon)
+            if (Math.Abs(_stocksQueryRepository.GetProductQtty(id.Value)) > double.Epsilon)
             {
-                return RedirectToAction(nameof(Details), new {id});
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             return View(product);
@@ -175,11 +181,11 @@ namespace ManagementStocks.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            if (Math.Abs(_stocksRepository.GetProductQtty(id)) > double.Epsilon)
+            if (Math.Abs(_stocksQueryRepository.GetProductQtty(id)) > double.Epsilon)
             {
                 return RedirectToAction(nameof(Index));
             }
-            _productsRepository.Delete(id);
+            _productsCommandRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

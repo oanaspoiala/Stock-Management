@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using ManagementStocks.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -23,8 +24,10 @@ namespace StockMVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IDatabaseContext, DatabaseContext>();
-            services.AddTransient<IProductsRepository, ProductsRepository>();
-            services.AddTransient<IStocksRepository, StocksRepository>();
+            services.AddTransient<ICommandRepository<Product>, ProductsCommandRepository>();
+            services.AddTransient<IQueryRepository<Product>, ProductsQueryRepository>();
+            services.AddTransient<ICommandRepository<Stock>, StocksCommandRepository>();
+            services.AddTransient<IStocksQueryRepository, StocksQueryRepository>();
             var connectionString = Configuration["ConnectionStrings:DefaultConnectionString"];
             services.AddDbContext<DatabaseContext>(opt => opt.UseSqlServer(connectionString));
             services.AddMvc();

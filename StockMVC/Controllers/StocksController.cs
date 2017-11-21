@@ -9,21 +9,24 @@ namespace ManagementStocks.MVC.Controllers
 {
     public class StocksController : Controller
     {
-        private readonly IStocksRepository _stocksRepository;
-        private readonly IProductsRepository _productsRepository;
+        private readonly IQueryRepository<Product> _productsQueryRepository;
+        private readonly ICommandRepository<Stock> _stockCommandRepository;
+        private readonly IStocksQueryRepository _stocksQueryRepository;
 
         public StocksController(
-            IStocksRepository stocksRepository,
-            IProductsRepository productsRepository)
+            IQueryRepository<Product> productsQueryRepository,
+            ICommandRepository<Stock> stockCommandRepository,
+            IStocksQueryRepository stocksQueryRepository)
         {
-            _stocksRepository = stocksRepository;
-            _productsRepository = productsRepository;
+            _productsQueryRepository = productsQueryRepository;
+            _stockCommandRepository = stockCommandRepository;
+            _stocksQueryRepository = stocksQueryRepository;
         }
 
         // GET: Stocks
         public IActionResult Index()
         {
-            return View(_stocksRepository.Get());
+            return View(_stocksQueryRepository.Get());
         }
 
         // GET: Stocks/Details/5
@@ -34,7 +37,7 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var stock = _stocksRepository.Get(id.Value);
+            var stock = _stocksQueryRepository.Get(id.Value);
             if (stock == null)
             {
                 return NotFound();
@@ -46,7 +49,7 @@ namespace ManagementStocks.MVC.Controllers
         // GET: Stocks/Create
         public IActionResult Create()
         {
-            ViewData["ProductId"] = new SelectList(_productsRepository.Get(), "Id", "Name", null);
+            ViewData["ProductId"] = new SelectList(_productsQueryRepository.Get(), "Id", "Name", null);
             return View(new Stock());
         }
 
@@ -60,7 +63,7 @@ namespace ManagementStocks.MVC.Controllers
             if (ModelState.IsValid)
             {
                 stock.Id = Guid.NewGuid();
-                _stocksRepository.Create(stock);
+                _stockCommandRepository.Create(stock);
                 return RedirectToAction(nameof(Index));
             }
             return View(stock);
@@ -74,12 +77,12 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var stock = _stocksRepository.Get(id.Value);
+            var stock = _stocksQueryRepository.Get(id.Value);
             if (stock == null)
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_productsRepository.Get(), "Id", "Name", stock.ProductId);
+            ViewData["ProductId"] = new SelectList(_productsQueryRepository.Get(), "Id", "Name", stock.ProductId);
             return View(stock);
         }
 
@@ -99,11 +102,11 @@ namespace ManagementStocks.MVC.Controllers
             {
                 try
                 {
-                    _stocksRepository.Update(stock);
+                    _stockCommandRepository.Update(stock);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (_stocksRepository.Get(stock.Id) == null)
+                    if (_stocksQueryRepository.Get(stock.Id) == null)
                     {
                         return NotFound();
                     }
@@ -114,7 +117,7 @@ namespace ManagementStocks.MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_productsRepository.Get(), "Id", "Name", stock.ProductId);
+            ViewData["ProductId"] = new SelectList(_productsQueryRepository.Get(), "Id", "Name", stock.ProductId);
             return View(stock);
         }
 
@@ -126,7 +129,7 @@ namespace ManagementStocks.MVC.Controllers
                 return NotFound();
             }
 
-            var stock = _stocksRepository.Get(id.Value);
+            var stock = _stocksQueryRepository.Get(id.Value);
             if (stock == null)
             {
                 return NotFound();
@@ -140,7 +143,7 @@ namespace ManagementStocks.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            _stocksRepository.Delete(id);
+            _stockCommandRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

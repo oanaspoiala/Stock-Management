@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core;
 using Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using Persistance;
 
 namespace ManagementStocks.Repository
 {
-    public class ProductsRepository : IProductsRepository
+    public class ProductsCommandRepository : ICommandRepository<Product>
     {
         private readonly IDatabaseContext _databaseContext;
 
-        public ProductsRepository(IDatabaseContext databaseContext)
+        public ProductsCommandRepository(IDatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -23,16 +20,6 @@ namespace ManagementStocks.Repository
             _databaseContext.SaveChanges();
         }
 
-        public IReadOnlyList<Product> Get()
-        {
-           return _databaseContext.Products.ToList();
-        }
-
-        public Product Get(Guid id)
-        {
-           return _databaseContext.Products.Find(id);
-        }
-
         public void Update(Product product)
         {
             _databaseContext.Products.Update(product);
@@ -41,8 +28,12 @@ namespace ManagementStocks.Repository
 
         public void Delete(Guid id)
         {
-            _databaseContext.Products.Remove(Get(id));
-            _databaseContext.SaveChanges();
+            var product = _databaseContext.Products.Find(id);
+            if (product != null)
+            {
+                _databaseContext.Products.Remove(product);
+                _databaseContext.SaveChanges();
+            }
         }
     }
 }
