@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Entities;
+using System.Text;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Persistance;
 using StockManagement.Utils.QueryUtils;
 
@@ -15,12 +15,12 @@ namespace ManagementStocks.Repository
 
         public StocksQueryRepository(IDatabaseContext databaseContext)
         {
-            _databaseContext = databaseContext;
+            this._databaseContext = databaseContext;
         }
 
         public IReadOnlyList<Stock> Get()
         {
-            return _databaseContext.Stocks.Include(x => x.Product).ToList();
+            return _databaseContext.Stocks.ToList();
         }
 
         public IReadOnlyList<Stock> Get(QueryParameters queryParameters)
@@ -30,17 +30,19 @@ namespace ManagementStocks.Repository
 
         public Stock Get(Guid id)
         {
-            return _databaseContext.Stocks.Include(x => x.Product).FirstOrDefault(x => x.Id == id);
+            return _databaseContext.Stocks.Find(id);
         }
 
         public double GetProductQtty(Guid productId)
         {
-            if (!_databaseContext.Stocks.Any(x => x.ProductId == productId))
-            {
-                return 0;
-            }
-            return _databaseContext.Stocks.Where(x => x.ProductId == productId && x.IsCredit).Sum(x => x.Quantity) -
-                   _databaseContext.Stocks.Where(x => x.ProductId == productId && !x.IsCredit).Sum(x => x.Quantity);
+            var credit = _databaseContext.Stocks.Any(x => x.Product.Id == productId && x.IsCredit)
+                ? _databaseContext.Stocks.Where(x => x.Product.Id == productId && x.IsCredit).Sum(x => x.Quantity)
+                : 0;
+
+            var debit = _databaseContext.Stocks.Any(x => x.Product.Id == productId && !x.IsCredit)
+                ? _databaseContext.Stocks.Where(x => x.Product.Id == productId && !x.IsCredit).Sum(x => x.Quantity)
+                : 0;
+            return credit - debit;
         }
     }
 }

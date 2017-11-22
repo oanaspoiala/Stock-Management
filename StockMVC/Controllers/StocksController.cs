@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
 using Core.Entities;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
+using ManagementStocks.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using StockManagement.Utils.QueryUtils;
 
 namespace ManagementStocks.MVC.Controllers
 {
@@ -24,9 +28,76 @@ namespace ManagementStocks.MVC.Controllers
         }
 
         // GET: Stocks
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string searchString, int? page, int? pageSize)
         {
-            return View(_stocksQueryRepository.Get());
+            ViewData["OperationTimeSortParm"] = sortOrder == "operationTime" ? "operationTime_desc" : "operationTime";
+            ViewData["ProductNameSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "name_desc" ? "name" : "name_desc";
+            ViewData["PriceSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "price_desc" ? "price" : "price_desc";
+            ViewData["QttySortParm"] = sortOrder == "qtty" ? "qtty_desc" : "qtty";
+            ViewData["CurrentFilter"] = searchString;
+
+            var queryParameters = new QueryParameters
+            {
+                PageNumber = page ?? 1,
+                PageSize = pageSize ?? 10
+            };
+            var sortItem = new QuerySortItem();
+            switch (sortOrder)
+            {
+                case "operationTime_desc":
+                    sortItem.FieldName = "OperationTime";
+                    sortItem.Descending = true;
+                    break;
+                case "operationTime":
+                    sortItem.FieldName = "OperationTime";
+                    sortItem.Descending = false;
+                    break;
+                case "name_desc":
+                    sortItem.FieldName = "Name";
+                    sortItem.Descending = true;
+                    break;
+                case "name":
+                    sortItem.FieldName = "Name";
+                    sortItem.Descending = false;
+                    break;
+                case "price_desc":
+                    sortItem.FieldName = "Price";
+                    sortItem.Descending = true;
+                    break;
+                case "qtty":
+                    sortItem.FieldName = "Qtty";
+                    sortItem.Descending = false;
+                    break;
+                case "qtty_desc":
+                    sortItem.FieldName = "Qtty";
+                    sortItem.Descending = true;
+                    break;
+                default:
+                    sortItem.FieldName = "Price";
+                    sortItem.Descending = false;
+                    break;
+            }
+            queryParameters.SortItems.Add(sortItem);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                queryParameters.Filters.Add(new QueryFilterItem
+                {
+                    FieldName = "Name",
+                    FilterValue = searchString,
+                    FilterOperator = "LIKE",
+                    ParameterName = "Name"
+                });
+            }
+
+            var stocks = _stocksQueryRepository.Get(queryParameters)
+                .Select(x => new StockViewModel
+                {
+                    Id = x.Id,
+                    Price = x.Price,
+                    Quantity = x.Quantity,
+                }).ToList();
+            return View(stocks);
         }
 
         // GET: Stocks/Details/5
@@ -143,6 +214,10 @@ namespace ManagementStocks.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            if (Math.Abs(_stocksQueryRepository.GetProductQtty(id)) > double.Epsilon)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             _stockCommandRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }

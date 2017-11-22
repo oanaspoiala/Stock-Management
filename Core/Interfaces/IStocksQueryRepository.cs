@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Core.Entities;
+using ManagementStocks.Core.Entities;
 
 namespace ManagementStocks.Core.Interfaces
 {

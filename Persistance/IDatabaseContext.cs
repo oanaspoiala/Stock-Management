@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using ManagementStocks.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistance

@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Entities;
 using ManagementStocks.Core.Interfaces;
+using Microsoft.Extensions.Logging;
 using Persistance;
 
 namespace ManagementStocks.Repository
@@ -8,10 +9,12 @@ namespace ManagementStocks.Repository
     public class ProductsCommandRepository : ICommandRepository<Product>
     {
         private readonly IDatabaseContext _databaseContext;
+        private readonly ILogger _logger;
 
-        public ProductsCommandRepository(IDatabaseContext databaseContext)
+        public ProductsCommandRepository(IDatabaseContext databaseContext, ILogger<ProductsCommandRepository> logger)
         {
             _databaseContext = databaseContext;
+            _logger = logger;
         }
 
         public void Create(Product product)

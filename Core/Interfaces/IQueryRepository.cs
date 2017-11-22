@@ -1,7 +1,6 @@
 ﻿using StockManagement.Utils.QueryUtils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ManagementStocks.Core.Interfaces
 {

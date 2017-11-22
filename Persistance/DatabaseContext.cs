@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using ManagementStocks.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistance
@@ -12,6 +13,6 @@ namespace Persistance
         }
 
         public DbSet<Core.Entities.Product> Products { get; set; }
-        public DbSet<Core.Entities.Stock> Stocks { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
     }
 }

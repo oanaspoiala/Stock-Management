@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core.Entities.Stock>
+﻿@model IEnumerable<ManagementStocks.MVC.Models.StockViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,23 +9,37 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+
 <table class="table">
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.OperationTime)
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["OperationTimeSortParm"]">@Html.DisplayNameFor(model => model.OperationTime)</a>
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Quantity)
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["ProductNameSortParm"]">@Html.DisplayNameFor(model => model.Product.Name)</a>
+            
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Price)
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParm"]">@Html.DisplayNameFor(model => model.Price)</a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewData["QttySortParm"]">@Html.DisplayNameFor(model => model.Quantity)</a>
+            
         </th>
         <th>
             @Html.DisplayNameFor(model => model.IsCredit)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Product)
         </th>
         <th></th>
     </tr>
@@ -37,21 +51,29 @@
             @Html.DisplayFor(modelItem => item.OperationTime)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Quantity)
+            @Html.DisplayFor(modelItem => item.Product.Name)
+            
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Price)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsCredit)
+            @Html.DisplayFor(modelItem => item.Quantity)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Product.Name)
+            @Html.DisplayFor(modelItem => item.IsCredit)
         </td>
         <td>
             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
             <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            @if (Math.Abs(item.Quantity) <= double.Epsilon)
+            {
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            }
+            else
+            {
+                <a href="#">Delete</a>
+            }
         </td>
     </tr>
 }

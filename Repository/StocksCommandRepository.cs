@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Core.Entities;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using Persistance;
 

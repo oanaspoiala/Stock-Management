@@ -1,7 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Entities;
 
-namespace Core.Entities
+namespace ManagementStocks.Core.Entities
 {
     public class Stock
     {
