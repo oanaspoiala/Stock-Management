@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ManagementStocks.MVC.Models.StockViewModel>
+﻿@model IEnumerable<ManagementStocks.Core.Entities.Stock>
 
 @{
     ViewData["Title"] = "Index";
@@ -61,19 +61,12 @@
             @Html.DisplayFor(modelItem => item.Quantity)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.IsCredit)
+            @Html.CheckBoxFor(modelItem => item.IsCredit)
         </td>
         <td>
             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
             <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            @if (Math.Abs(item.Quantity) <= double.Epsilon)
-            {
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            }
-            else
-            {
-                <a href="#">Delete</a>
-            }
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
         </td>
     </tr>
 }

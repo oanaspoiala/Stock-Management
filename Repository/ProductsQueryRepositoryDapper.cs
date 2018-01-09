@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Core.Entities;
 using Dapper;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

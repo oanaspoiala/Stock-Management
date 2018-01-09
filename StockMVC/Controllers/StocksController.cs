@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using Core.Entities;
 using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using ManagementStocks.MVC.Models;
@@ -90,13 +89,14 @@ namespace ManagementStocks.MVC.Controllers
                 });
             }
 
-            var stocks = _stocksQueryRepository.Get(queryParameters)
-                .Select(x => new StockViewModel
-                {
-                    Id = x.Id,
-                    Price = x.Price,
-                    Quantity = x.Quantity,
-                }).ToList();
+            var stocks = _stocksQueryRepository.Get(queryParameters);
+                //.Select(x => new StockViewModel
+                //{
+                //    Id = x.Id,
+                //    Price = x.Price,
+                //    Quantity = x.Quantity,
+                //    Product = x.Product
+                //}).ToList();
             return View(stocks);
         }
 
@@ -129,7 +129,7 @@ namespace ManagementStocks.MVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,ProductId,Quantity,Price,IsCredit,OperationTime")] Stock stock)
+        public IActionResult Create([Bind("Id,Name,Quantity,Price,IsCredit,OperationTime")] Stock stock)
         {
             if (ModelState.IsValid)
             {
@@ -162,7 +162,7 @@ namespace ManagementStocks.MVC.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,ProductId,Quantity,Price,IsCredit,OperationTime")] Stock stock)
+        public IActionResult Edit(Guid id, /*[Bind("Id,Product,ProductId,Quantity,Price,IsCredit,OperationTime")]*/ Stock stock)
         {
             if (id != stock.Id)
             {
@@ -214,10 +214,6 @@ namespace ManagementStocks.MVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            if (Math.Abs(_stocksQueryRepository.GetProductQtty(id)) > double.Epsilon)
-            {
-                return RedirectToAction(nameof(Index));
-            }
             _stockCommandRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }

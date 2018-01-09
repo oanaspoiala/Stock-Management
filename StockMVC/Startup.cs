@@ -1,6 +1,4 @@
-﻿using Core;
-using Core.Entities;
-using ManagementStocks.Core.Entities;
+﻿using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using ManagementStocks.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +11,7 @@ using NLog.Extensions.Logging;
 using NLog.Web;
 using Persistance;
 
-namespace StockMVC
+namespace ManagementStocks.MVC
 {
     public class Startup
     {

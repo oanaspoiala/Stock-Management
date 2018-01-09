@@ -15,7 +15,7 @@ namespace ManagementStocks.Repository
 
         public StocksQueryRepository(IDatabaseContext databaseContext)
         {
-            this._databaseContext = databaseContext;
+            _databaseContext = databaseContext;
         }
 
         public IReadOnlyList<Stock> Get()

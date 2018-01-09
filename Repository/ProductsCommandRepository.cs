@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Entities;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using Persistance;

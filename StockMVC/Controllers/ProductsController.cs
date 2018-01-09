@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Core.Entities;
+using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
 using ManagementStocks.MVC.Models;
 using Microsoft.AspNetCore.Mvc;

@@ -5,6 +5,7 @@ using System.Linq;
 using Dapper;
 using ManagementStocks.Core.Entities;
 using ManagementStocks.Core.Interfaces;
+using ManagementStocks.Repository.DTO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -50,8 +51,22 @@ namespace ManagementStocks.Repository
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
-                var result = sqlConnection.Query<Stock>(sql, sqlParameters);
-                return result.ToList();
+                var result = sqlConnection.Query<StockDto>(sql, sqlParameters);
+                return result.ToList().Select(x => new Stock
+                {
+                    Id = x.Id,
+                    Product = new Product
+                    {
+                        Id = x.ProductId,
+                        Name = x.Name,
+                        Description = x.Description
+                    },
+                    ProductId = x.ProductId,
+                    IsCredit = x.IsCredit,
+                    Price = x.Price,
+                    Quantity = x.Quantity,
+                    OperationTime = x.OperationTime
+                }).ToList();
             }
 
         }
@@ -60,12 +75,26 @@ namespace ManagementStocks.Repository
         {
             var sql = $@"select Stocks.*, Products.Name, Products.Description from Stocks
                             join Products on Products.Id = Stocks.ProductId
-                            WHERE Id=@Id";
+                            WHERE Stocks.Id=@Id";
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
-                var result = sqlConnection.QueryFirst<Stock>(sql, new {Id = id});
-                return result;
+                var result = sqlConnection.QueryFirst<StockDto>(sql, new {Id = id});
+                return new Stock
+                {
+                    Id = result.Id,
+                    Product = new Product
+                    {
+                        Id = result.ProductId,
+                        Name = result.Name,
+                        Description = result.Description
+                    },
+                    ProductId = result.ProductId,
+                    IsCredit = result.IsCredit,
+                    Price = result.Price,
+                    Quantity = result.Quantity,
+                    OperationTime = result.OperationTime
+                };
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using Core.Entities;
-using ManagementStocks.Core.Entities;
+﻿using ManagementStocks.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistance
@@ -12,7 +11,7 @@ namespace Persistance
             // Database.EnsureCreated();
         }
 
-        public DbSet<Core.Entities.Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<Stock> Stocks { get; set; }
     }
 }

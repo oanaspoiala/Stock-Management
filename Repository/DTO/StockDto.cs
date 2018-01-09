@@ -1,20 +1,20 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using System.Text;
 
-namespace ManagementStocks.Core.Entities
+namespace ManagementStocks.Repository.DTO
 {
-    public class Stock
+    public class StockDto
     {
         public Guid Id { get; set; }
 
-        [DataType(DataType.Date)]
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
         public DateTime OperationTime { get; set; }
 
         public Guid ProductId { get; set; }
-
-        [ForeignKey("ProductId")]
-        public virtual Product Product { get; set; }
 
         public double Quantity { get; set; }
 

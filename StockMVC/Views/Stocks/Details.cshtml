@@ -1,4 +1,4 @@
-﻿@using ManagementStocks.Core.Entities
+﻿
 @model ManagementStocks.Core.Entities.Stock
 
 @{
@@ -33,7 +33,7 @@
             @Html.DisplayNameFor(model => model.IsCredit)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.IsCredit)
+            @Html.CheckBox("IsCredit", Model.IsCredit)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Product)
